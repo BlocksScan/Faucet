@@ -9,6 +9,7 @@
     "gasLimit": "0x7b0c",
     "live": {
       "rpc": "https://testnet.xinfin.network",
+      "devnet":"https://devneterpc.apothem.network/",
       "account": "xdc6d0FB3E407B1300b7a586826dDB3B4D3BCE920e8",
       "privateKey": "xxx"
     }

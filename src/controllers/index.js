@@ -45,6 +45,16 @@ module.exports = function (app) {
 		await sendPOAToRecipient(web3, receiver, response, isDebug)
 	});
 
+	app.get('/:network/:address', async function(request, response) {
+		let receiver = request.params.address
+		let network=request.params.network
+		const isDebug = app.config.debug
+		debug(isDebug, "REQUEST:")
+		debug(isDebug, request.body)
+		await sendPOAToRecipient(web3, receiver, response, isDebug)
+	});
+
+
 	app.get('/health', async function(request, response) {
 		let balanceInWei
 		let balanceInEth
