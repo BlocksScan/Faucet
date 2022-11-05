@@ -15,27 +15,28 @@ module.exports = function (app) {
 	}
 
 	app.post('/', async function(request, response) {
-		const isDebug = app.config.debug
-		debug(isDebug, "REQUEST:")
-		debug(isDebug, request.body)
-		const recaptureResponse = request.body["g-recaptcha-response"]
-		if (!recaptureResponse) {
-			const error = {
-				message: messages.INVALID_CAPTCHA,
-			}
-			return generateErrorResponse(response, error)
-		}
+		// const isDebug = app.config.debug
+		// debug(isDebug, "REQUEST:")
+		// debug(isDebug, request.body)
+		// const recaptureResponse = request.body["g-recaptcha-response"]
+		// if (!recaptureResponse) {
+		// 	const error = {
+		// 		message: messages.INVALID_CAPTCHA,
+		// 	}
+		// 	return generateErrorResponse(response, error)
+		// }
 
-		let captchaResponse
-		try {
-			captchaResponse = await validateCaptcha(app, recaptureResponse)
-		} catch(e) {
-			return generateErrorResponse(response, e)
-		}
+		// let captchaResponse
+		// try {
+		// 	captchaResponse = await validateCaptcha(app, recaptureResponse)
+		// } catch(e) {
+		// 	return generateErrorResponse(response, e)
+		// }
 		const receiver = request.body.receiver
-		if (await validateCaptchaResponse(captchaResponse, receiver, response)) {
-			await sendPOAToRecipient(web3, receiver, response, isDebug)
-		}
+	    const network=request.body.network
+		// if (await validateCaptchaResponse(captchaResponse, receiver, response)) {
+		// 	await sendPOAToRecipient(web3, receiver, response, isDebug)
+		// }
 	});
 	app.get('/donate/:address', async function(request, response) {
 		let receiver = request.params.address
@@ -45,9 +46,12 @@ module.exports = function (app) {
 		await sendPOAToRecipient(web3, receiver, response, isDebug)
 	});
 
-	app.get('/:network/:address', async function(request, response) {
+	app.get('/donate/:network/:address', async function(request, response) {
 		let receiver = request.params.address
 		let network=request.params.network
+		// console.log(network);
+		// console.log(receiver);
+		module.exports.network=network;
 		const isDebug = app.config.debug
 		debug(isDebug, "REQUEST:")
 		debug(isDebug, request.body)
@@ -148,3 +152,6 @@ module.exports = function (app) {
 	  	})
 	}
 }
+
+
+
