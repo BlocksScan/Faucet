@@ -2,7 +2,7 @@ const EthereumTx = require('ethereumjs-tx')
 const { generateErrorResponse } = require('../helpers/generate-response')
 const  { validateCaptcha } = require('../helpers/captcha-helper')
 const { debug } = require('../helpers/debug')
-
+var network;
 module.exports = function (app) {
 	const config = app.config
 	const web3 = app.web3
@@ -15,9 +15,9 @@ module.exports = function (app) {
 	}
 
 	app.post('/', async function(request, response) {
-		// const isDebug = app.config.debug
-		// debug(isDebug, "REQUEST:")
-		// debug(isDebug, request.body)
+		const isDebug = app.config.debug
+		debug(isDebug, "REQUEST:")
+		debug(isDebug, request.body)
 		// const recaptureResponse = request.body["g-recaptcha-response"]
 		// if (!recaptureResponse) {
 		// 	const error = {
@@ -33,32 +33,29 @@ module.exports = function (app) {
 		// 	return generateErrorResponse(response, e)
 		// }
 		const receiver = request.body.receiver
-	    const network=request.body.network
+	     network=request.body.network
+		const twitter=request.body.twitter
 		// if (await validateCaptchaResponse(captchaResponse, receiver, response)) {
 		// 	await sendPOAToRecipient(web3, receiver, response, isDebug)
 		// }
 	});
-	app.get('/donate/:address', async function(request, response) {
-		let receiver = request.params.address
-		const isDebug = app.config.debug
-		debug(isDebug, "REQUEST:")
-		debug(isDebug, request.body)
-		await sendPOAToRecipient(web3, receiver, response, isDebug)
-	});
-
+	// app.get('/donate/:address', async function(request, response) {
+	// 	let receiver = request.params.address
+	// 	const isDebug = app.config.debug
+	// 	debug(isDebug, "REQUEST:")
+	// 	debug(isDebug, request.body)
+	// 	await sendPOAToRecipient(web3, receiver, response, isDebug)
+	// });
+	
 	app.get('/donate/:network/:address', async function(request, response) {
 		let receiver = request.params.address
-		let network=request.params.network
-		// console.log(network);
-		// console.log(receiver);
-		module.exports.network=network;
+		 network=request.params.network
 		const isDebug = app.config.debug
 		debug(isDebug, "REQUEST:")
 		debug(isDebug, request.body)
 		await sendPOAToRecipient(web3, receiver, response, isDebug)
 	});
-
-
+	
 	app.get('/health', async function(request, response) {
 		let balanceInWei
 		let balanceInEth
@@ -153,5 +150,5 @@ module.exports = function (app) {
 	}
 }
 
-
+module.exports.network = network;
 

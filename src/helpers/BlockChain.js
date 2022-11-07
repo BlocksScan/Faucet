@@ -1,6 +1,6 @@
 const Web3 = require('web3')
 import { network } from './controllers/index';
-
+console.log(network)
 module.exports = function (app) {
 	app.configureWeb3 = configureWeb3
  
