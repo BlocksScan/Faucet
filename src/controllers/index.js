@@ -2,7 +2,8 @@ const EthereumTx = require('ethereumjs-tx')
 const { generateErrorResponse } = require('../helpers/generate-response')
 const  { validateCaptcha } = require('../helpers/captcha-helper')
 const { debug } = require('../helpers/debug')
-var network;
+const  {validateNetwork} = require ('../helpers/BlockChain')
+
 module.exports = function (app) {
 	const config = app.config
 	const web3 = app.web3
@@ -18,7 +19,7 @@ module.exports = function (app) {
 		const isDebug = app.config.debug
 		debug(isDebug, "REQUEST:")
 		debug(isDebug, request.body)
-		// const recaptureResponse = request.body["g-recaptcha-response"]
+		// const recaptureResponse = request.body["g-recaptcha-response"] 
 		// if (!recaptureResponse) {
 		// 	const error = {
 		// 		message: messages.INVALID_CAPTCHA,
@@ -33,27 +34,30 @@ module.exports = function (app) {
 		// 	return generateErrorResponse(response, e)
 		// }
 		const receiver = request.body.receiver
-	     network=request.body.network
+	     const network=request.body.network
 		const twitter=request.body.twitter
 		// if (await validateCaptchaResponse(captchaResponse, receiver, response)) {
 		// 	await sendPOAToRecipient(web3, receiver, response, isDebug)
 		// }
 	});
-	// app.get('/donate/:address', async function(request, response) {
-	// 	let receiver = request.params.address
-	// 	const isDebug = app.config.debug
-	// 	debug(isDebug, "REQUEST:")
-	// 	debug(isDebug, request.body)
-	// 	await sendPOAToRecipient(web3, receiver, response, isDebug)
-	// });
-	
-	app.get('/donate/:network/:address', async function(request, response) {
+	app.get('/donate/:address', async function(request, response) {
 		let receiver = request.params.address
-		 network=request.params.network
 		const isDebug = app.config.debug
 		debug(isDebug, "REQUEST:")
 		debug(isDebug, request.body)
 		await sendPOAToRecipient(web3, receiver, response, isDebug)
+	});
+	
+	app.get('/donate/:network/:address', async function(request, response) {
+		let receiver = request.params.address
+		var network=request.params.network
+		validateNetwork(app,config,network)
+		var webnew3=app.configureWeb3()
+		
+		const isDebug = app.config.debug
+		debug(isDebug, "REQUEST:")
+		debug(isDebug, request.body)
+		await sendPOAToRecipient(webnew3, receiver, response, isDebug)
 	});
 	
 	app.get('/health', async function(request, response) {
@@ -85,6 +89,7 @@ module.exports = function (app) {
 	}
 
 	async function sendPOAToRecipient(web3, receiver, response, isDebug) {
+		console.log(config)
 		let senderPrivateKey = config.Ethereum[config.environment].privateKey
 		const privateKeyHex = Buffer.from(senderPrivateKey, 'hex')
 		receiver = '0x'+receiver.substring(3)
@@ -150,5 +155,6 @@ module.exports = function (app) {
 	}
 }
 
-module.exports.network = network;
 
+
+// https://testnet.xinfin.network

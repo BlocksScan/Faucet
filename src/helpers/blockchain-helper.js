@@ -5,6 +5,8 @@ module.exports = function (app) {
  
 	function configureWeb3 (config) {
 		return new Promise((resolve, reject) => {
+
+			
 			let web3
 			if (typeof web3 !== 'undefined') {
 				web3 = new Web3(web3.currentProvider)
