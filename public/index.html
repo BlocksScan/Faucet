@@ -45,15 +45,15 @@
         <div class="request-tokens">
           <h1>XDC Apothem Network Faucet</h1>
             <input type="text" id="receiver" name="receiver" placeholder="Enter your XDC address" />
-              <div >
-                <label for="netwokrs" id="styling" style="color: #040505;margin:5px auto; font-size: 14px;
-                font-weight: normal;">Choose a Network:</label>
-                <select name="network" id="network">
+              <div id="styling">
+                <label for="netwokrs" id="styling" >Choose a Network:</label>
+                <select  name="network" id="network">
                 <option value="rpc">rpc</option>
                 <option value="devnet">devnet</option>
                 </select>
               </div>
-              <input type="text" id="twitter" name="twitter" placeholder="Enter your twitter post address to get 10Million XDC" />
+              <input type="text" id="XDCNumber" name="XDCNumber" placeholder="Enter the amount of XDC" />
+              <input type="text" id="twitter" name="twitter" placeholder="Enter your twitter post address to request more XDC" />
             <h2>
               Please use https://rpc.apothem.network RPC to connect<br>
               to the XDC Apothem testnet.
@@ -61,7 +61,7 @@
             <div class="g-recaptcha" data-sitekey="6LcHFrMfAAAAAOh-_8Ug2K6xjp3tNh0D07brfjE0"></div>
 <br><br>
             <button type="submit" id="requestTokens" class="request-tokens-button">Request 1000 XDC</button>
-            <button type="submit" id="requestTokens" class="request-tokens-button">Request 10Million XDC</button>
+            <!-- <button type="submit" id="requestTokens" class="request-tokens-button">Request 10Million XDC</button> -->
         </div>
         <div class="text-xs-center">
         </div>

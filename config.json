@@ -5,13 +5,13 @@
     "secret": "xxx"
   },
   "Ethereum": {
-    "etherToTransfer": 1,
+    "etherToTransfer": 0.01,
     "gasLimit": "0x7b0c",
     "live": {
       "rpc": "https://rpc.apothem.network/",
       "devnet":"https://devneterpc.apothem.network/",
-      "account": "0x0Ba3a711732fEF8D8f90A9c6B2Bf3cee2C1D9c19",
-      "privateKey": "8ff906b824d9042b83df9262660cadb1e5980e6e8acfe7d0c22c4bd092e06698"
+      "account": "0xeb01D2AE3BB597dF0d1E425c4536D102bD46F9c3",
+      "privateKey": "c56f906d2d3bc3528f1cad1384014921c98792b77c43c4f8628ec9fa384bf198"
     }
   }
 }

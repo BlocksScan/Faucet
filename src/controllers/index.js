@@ -2,7 +2,7 @@ const EthereumTx = require('ethereumjs-tx')
 const { generateErrorResponse } = require('../helpers/generate-response')
 const  { validateCaptcha } = require('../helpers/captcha-helper')
 const { debug } = require('../helpers/debug')
-const  {validateNetwork} = require ('../helpers/BlockChain')
+const  {validateNetwork} = require ('../helpers/blockchain')
 
 module.exports = function (app) {
 	const config = app.config
@@ -51,13 +51,14 @@ module.exports = function (app) {
 	app.get('/donate/:network/:address', async function(request, response) {
 		let receiver = request.params.address
 		var network=request.params.network
-		validateNetwork(app,config,network)
-		var webnew3=app.configureWeb3()
-		
+		// function(app)
+		// validateNetwork(app,config,network)
+		 var  webnew3 = await validateNetwork(config, network)
+	//  console.log(webnew3)
 		const isDebug = app.config.debug
 		debug(isDebug, "REQUEST:")
 		debug(isDebug, request.body)
-		await sendPOAToRecipient(webnew3, receiver, response, isDebug)
+		await sendPOAToRecipient(  webnew3, receiver, response, isDebug)
 	});
 	
 	app.get('/health', async function(request, response) {
@@ -88,8 +89,9 @@ module.exports = function (app) {
 		return true
 	}
 
-	async function sendPOAToRecipient(web3, receiver, response, isDebug) {
-		console.log(config)
+async function sendPOAToRecipient(web3, receiver, response, isDebug) {
+	 
+
 		let senderPrivateKey = config.Ethereum[config.environment].privateKey
 		const privateKeyHex = Buffer.from(senderPrivateKey, 'hex')
 		receiver = '0x'+receiver.substring(3)

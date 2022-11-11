@@ -14,7 +14,7 @@ module.exports = function (app) {
 			else {
 				web3 = new Web3(new Web3.providers.HttpProvider(config.Ethereum[config.environment].rpc))
 			}
-
+              
 			if (typeof web3 !== 'undefined') {
 				return resolve(web3)
 			}
