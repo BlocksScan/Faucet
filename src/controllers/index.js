@@ -36,9 +36,10 @@ module.exports = function (app) {
 		const receiver = request.body.receiver
 	     const network=request.body.network
 		const twitter=request.body.twitter
+		const userAmount=request.body.amount
 		// if (await validateCaptchaResponse(captchaResponse, receiver, response)) {
 		// 	await sendPOAToRecipient(web3, receiver, response, isDebug)
-		// }
+		// } 
 	});
 	app.get('/donate/:address', async function(request, response) {
 		let receiver = request.params.address
@@ -48,17 +49,16 @@ module.exports = function (app) {
 		await sendPOAToRecipient(web3, receiver, response, isDebug)
 	});
 	
-	app.get('/donate/:network/:address', async function(request, response) {
+	app.get('/donate/:address/:network/:amount', async function(request, response) {
 		let receiver = request.params.address
 		var network=request.params.network
-		// function(app)
-		// validateNetwork(app,config,network)
+		var userAmount=request.params.amount
 		 var  webnew3 = await validateNetwork(config, network)
-	//  console.log(webnew3)
+		//  console.log(webnew3)
 		const isDebug = app.config.debug
 		debug(isDebug, "REQUEST:")
 		debug(isDebug, request.body)
-		await sendPOAToRecipient(  webnew3, receiver, response, isDebug)
+		await sendPOAToRecipient(  webnew3, receiver, response, isDebug, userAmount)
 	});
 	
 	app.get('/health', async function(request, response) {
@@ -89,8 +89,59 @@ module.exports = function (app) {
 		return true
 	}
 
-async function sendPOAToRecipient(web3, receiver, response, isDebug) {
+// async function sendPOAToRecipient(web3, receiver, response, isDebug) {
 	 
+
+// 		let senderPrivateKey = config.Ethereum[config.environment].privateKey
+// 		const privateKeyHex = Buffer.from(senderPrivateKey, 'hex')
+// 		receiver = '0x'+receiver.substring(3)
+// 		if (!web3.utils.isAddress(receiver)) {
+// 			return generateErrorResponse(response, {message: messages.INVALID_ADDRESS})
+// 		}
+		
+// 		const gasPrice = web3.utils.toWei('1', 'gwei')
+// 		const gasPriceHex = web3.utils.toHex(gasPrice)
+// 		const gasLimitHex = web3.utils.toHex(config.Ethereum.gasLimit)
+// 		const nonce = await web3.eth.getTransactionCount(config.Ethereum[config.environment].account)
+// 		const nonceHex = web3.utils.toHex(nonce)
+// 		const BN = web3.utils.BN
+// 		const ethToSend = web3.utils.toWei(new BN(config.Ethereum.milliEtherToTransfer), "milliether")
+// 		// console.log(ethToSend)
+// 		const rawTx = {
+// 		  nonce: nonceHex,
+// 		  gasPrice: gasPriceHex,
+// 		  gasLimit: gasLimitHex,
+// 		  to: receiver, 
+// 		  value: ethToSend,
+// 		  data: '0x00'
+// 		}
+
+// 		const tx = new EthereumTx(rawTx)
+// 		tx.sign(privateKeyHex)
+
+// 		const serializedTx = tx.serialize()
+
+// 		let txHash
+// 		web3.eth.sendSignedTransaction("0x" + serializedTx.toString('hex'))
+// 		.on('transactionHash', (_txHash) => {
+// 			txHash = _txHash
+// 		})
+// 		.on('receipt', (receipt) => {
+// 			debug(isDebug, receipt)
+// 			if (receipt.status == '0x1') {
+// 				return sendRawTransactionResponse(txHash, response,receiver,1000)
+// 			} else {
+// 				const error = {
+// 					message: messages.TX_HAS_BEEN_MINED_WITH_FALSE_STATUS,
+// 				}
+// 				return generateErrorResponse(response, error);
+// 			}
+// 		})
+// 		.on('error', (error) => {
+// 			return generateErrorResponse(response, error)
+// 		});
+// 	}
+async function sendPOAToRecipient(web3, receiver, response, isDebug,userAmount) {
 
 		let senderPrivateKey = config.Ethereum[config.environment].privateKey
 		const privateKeyHex = Buffer.from(senderPrivateKey, 'hex')
@@ -104,8 +155,16 @@ async function sendPOAToRecipient(web3, receiver, response, isDebug) {
 		const gasLimitHex = web3.utils.toHex(config.Ethereum.gasLimit)
 		const nonce = await web3.eth.getTransactionCount(config.Ethereum[config.environment].account)
 		const nonceHex = web3.utils.toHex(nonce)
-		const BN = web3.utils.BN
-		const ethToSend = web3.utils.toWei(new BN(config.Ethereum.milliEtherToTransfer), "milliether")
+		// const BN = web3.utils.BN
+		const value=1000
+	
+		if(userAmount >1000){		
+			var ethToSend =web3.utils.toHex(web3.utils.toWei(userAmount.toString(), 'ether'))
+		} 
+		else{		
+			var ethToSend = web3.utils.toHex(web3.utils.toWei(value.toString(), 'ether'))
+		}
+		
 		const rawTx = {
 		  nonce: nonceHex,
 		  gasPrice: gasPriceHex,
@@ -114,8 +173,7 @@ async function sendPOAToRecipient(web3, receiver, response, isDebug) {
 		  value: ethToSend,
 		  data: '0x00'
 		}
-
-		const tx = new EthereumTx(rawTx)
+    	const tx = new EthereumTx(rawTx)
 		tx.sign(privateKeyHex)
 
 		const serializedTx = tx.serialize()
@@ -128,7 +186,7 @@ async function sendPOAToRecipient(web3, receiver, response, isDebug) {
 		.on('receipt', (receipt) => {
 			debug(isDebug, receipt)
 			if (receipt.status == '0x1') {
-				return sendRawTransactionResponse(txHash, response,receiver,1000)
+				return sendRawTransactionResponse(txHash, response,receiver,ethToSend)
 			} else {
 				const error = {
 					message: messages.TX_HAS_BEEN_MINED_WITH_FALSE_STATUS,
@@ -142,11 +200,13 @@ async function sendPOAToRecipient(web3, receiver, response, isDebug) {
 	}
 
 	function sendRawTransactionResponse(txHash, response,receiver,ethToSend) {
+		ethToSend=parseInt(ethToSend,16)
+		const amountToSend= ethToSend/1000000000000000000
 		const successResponse = {
 			code: 200, 
 			title: 'Success', 
 			address: receiver,
-			amount:ethToSend, 
+			amount: amountToSend, 
 			message: messages.TX_HAS_BEEN_MINED,
 			txhash: txHash
 		}
@@ -159,4 +219,4 @@ async function sendPOAToRecipient(web3, receiver, response, isDebug) {
 
 
 
-// https://testnet.xinfin.network
+// https://testnet.xinfin.network 

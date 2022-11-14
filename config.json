@@ -5,7 +5,7 @@
     "secret": "xxx"
   },
   "Ethereum": {
-    "etherToTransfer": 0.01,
+    "etherToTransfer": 1,
     "gasLimit": "0x7b0c",
     "live": {
       "rpc": "https://rpc.apothem.network/",

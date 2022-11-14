@@ -4,7 +4,7 @@ const Web3 = require('web3')
 		// app.configureWeb3 = configureWeb3
 		function validateNetwork(config, network) {
 			return new Promise((resolve, reject) => {
-	
+  	
 				let web3
 				   
 				if (typeof web3 !== 'undefined') {
@@ -15,6 +15,7 @@ const Web3 = require('web3')
 					if(network==="devnet"){
 						
 						web3 = new Web3(new Web3.providers.HttpProvider(config.Ethereum[config.environment].devnet))
+					
 					}
 					else{
 						
