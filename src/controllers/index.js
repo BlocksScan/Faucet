@@ -1,9 +1,10 @@
 const EthereumTx = require('ethereumjs-tx')
 const { generateErrorResponse } = require('../helpers/generate-response')
-const  { validateCaptcha } = require('../helpers/captcha-helper')
+// const  { validateCaptcha } = require('../helpers/captcha-helper')
 const { debug } = require('../helpers/debug')
 const  {validateNetwork} = require ('../helpers/blockchain')
-
+const  {sendMail} = require ('../helpers/nodeMailer')
+var userAmount;
 module.exports = function (app) {
 	const config = app.config
 	const web3 = app.web3
@@ -21,7 +22,7 @@ module.exports = function (app) {
 		debug(isDebug, request.body)
 		// const recaptureResponse = request.body["g-recaptcha-response"] 
 		// if (!recaptureResponse) {
-		// 	const error = {
+		// 	const error = { 
 		// 		message: messages.INVALID_CAPTCHA,
 		// 	}
 		// 	return generateErrorResponse(response, error)
@@ -34,9 +35,10 @@ module.exports = function (app) {
 		// 	return generateErrorResponse(response, e)
 		// }
 		const receiver = request.body.receiver
-	     const network=request.body.network
+	    const network=request.body.network
 		const twitter=request.body.twitter
-		const userAmount=request.body.amount
+		var userAmount=request.body.XDCNumber
+		console.log(receiver,network,twitter,userAmount)
 		// if (await validateCaptchaResponse(captchaResponse, receiver, response)) {
 		// 	await sendPOAToRecipient(web3, receiver, response, isDebug)
 		// } 
@@ -48,18 +50,33 @@ module.exports = function (app) {
 		debug(isDebug, request.body)
 		await sendPOAToRecipient(web3, receiver, response, isDebug)
 	});
-	
+
 	app.get('/donate/:address/:network/:amount', async function(request, response) {
 		let receiver = request.params.address
-		var network=request.params.network
+		let network=request.params.network
 		var userAmount=request.params.amount
 		 var  webnew3 = await validateNetwork(config, network)
-		//  console.log(webnew3)
 		const isDebug = app.config.debug
 		debug(isDebug, "REQUEST:")
 		debug(isDebug, request.body)
-		await sendPOAToRecipient(  webnew3, receiver, response, isDebug, userAmount)
+		 await sendPOAToRecipient(  webnew3, receiver, response, isDebug, userAmount=1000,twitter=null)
 	});
+
+	// if (userAmount>1000){
+		// document.getElementById("twitter").setAttribute("required"); 
+		app.get('/donate/:address/:network/:amount/:twitter', async function(request, response) {
+			let receiver = request.params.address
+			let network=request.params.network
+			let userAmount=request.params.amount
+			let twitter=request.params.twitter
+			var  webnew3 = await validateNetwork(config, network)
+			const isDebug = app.config.debug
+			debug(isDebug, "REQUEST:")
+			debug(isDebug, request.body)
+			await sendPOAToRecipient(  webnew3, receiver, response, isDebug, userAmount,twitter)
+		});
+	// }
+	
 	
 	app.get('/health', async function(request, response) {
 		let balanceInWei
@@ -80,17 +97,17 @@ module.exports = function (app) {
 		response.send(resp)
 	});
 
-	async function validateCaptchaResponse(captchaResponse, receiver, response) {
-		if (!captchaResponse || !captchaResponse.success) {
-			generateErrorResponse(response, {message: messages.INVALID_CAPTCHA})
-			return false
-		}
+	// async function validateCaptchaResponse(captchaResponse, receiver, response) {
+	// 	if (!captchaResponse || !captchaResponse.success) {
+	// 		generateErrorResponse(response, {message: messages.INVALID_CAPTCHA})
+	// 		return false
+	// 	}
 
-		return true
-	}
+	// 	return true
+	// }
 
 // async function sendPOAToRecipient(web3, receiver, response, isDebug) {
-	 
+// 	 console.log(web3)
 
 // 		let senderPrivateKey = config.Ethereum[config.environment].privateKey
 // 		const privateKeyHex = Buffer.from(senderPrivateKey, 'hex')
@@ -106,6 +123,7 @@ module.exports = function (app) {
 // 		const nonceHex = web3.utils.toHex(nonce)
 // 		const BN = web3.utils.BN
 // 		const ethToSend = web3.utils.toWei(new BN(config.Ethereum.milliEtherToTransfer), "milliether")
+// 		// var ethToSend = web3.utils.toHex(web3.utils.toWei(config.EtherToTransfer.toString(), 'ether'))
 // 		// console.log(ethToSend)
 // 		const rawTx = {
 // 		  nonce: nonceHex,
@@ -141,8 +159,7 @@ module.exports = function (app) {
 // 			return generateErrorResponse(response, error)
 // 		});
 // 	}
-async function sendPOAToRecipient(web3, receiver, response, isDebug,userAmount) {
-
+async function sendPOAToRecipient(web3, receiver, response, isDebug, userAmount,twitter) {
 		let senderPrivateKey = config.Ethereum[config.environment].privateKey
 		const privateKeyHex = Buffer.from(senderPrivateKey, 'hex')
 		receiver = '0x'+receiver.substring(3)
@@ -155,16 +172,18 @@ async function sendPOAToRecipient(web3, receiver, response, isDebug,userAmount) 
 		const gasLimitHex = web3.utils.toHex(config.Ethereum.gasLimit)
 		const nonce = await web3.eth.getTransactionCount(config.Ethereum[config.environment].account)
 		const nonceHex = web3.utils.toHex(nonce)
-		// const BN = web3.utils.BN
-		const value=1000
 	
-		if(userAmount >1000){		
+		// if (userAmount > 1000 && userAmount < 100000){	
+			if(twitter!=null){
+				sendMail(receiver, userAmount, twitter)
+			}
 			var ethToSend =web3.utils.toHex(web3.utils.toWei(userAmount.toString(), 'ether'))
-		} 
-		else{		
-			var ethToSend = web3.utils.toHex(web3.utils.toWei(value.toString(), 'ether'))
-		}
+		// } 
+		// else{
+		// 	var ethToSend =web3.utils.toHex(web3.utils.toWei(value.toString(), 'ether'))
+		// }
 		
+
 		const rawTx = {
 		  nonce: nonceHex,
 		  gasPrice: gasPriceHex,
@@ -197,7 +216,10 @@ async function sendPOAToRecipient(web3, receiver, response, isDebug,userAmount) 
 		.on('error', (error) => {
 			return generateErrorResponse(response, error)
 		});
+		
 	}
+	
+
 
 	function sendRawTransactionResponse(txHash, response,receiver,ethToSend) {
 		ethToSend=parseInt(ethToSend,16)
@@ -216,7 +238,6 @@ async function sendPOAToRecipient(web3, receiver, response, isDebug,userAmount) 
 	  	})
 	}
 }
-
 
 
 // https://testnet.xinfin.network 

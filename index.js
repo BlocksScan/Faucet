@@ -23,10 +23,10 @@ app.configureWeb3(config)
 	app.web3 = web3
 	app.use(express.static(__dirname + '/public'))
 	app.use(bodyParser.json({
-		limit: '50mb',
+		limit: '100mb',
 	}))
 	app.use(bodyParser.urlencoded({
-		limit: '50mb',
+		limit: '100mb',
 		extended: true,
 	}))
 

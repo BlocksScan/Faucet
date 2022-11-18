@@ -45,23 +45,23 @@
         <div class="request-tokens">
           <h1>XDC Apothem Network Faucet</h1>
             <input type="text" id="receiver" name="receiver" placeholder="Enter your XDC address" />
-              <div class="styling">
+              <div class="styling"style="text-align:left;">
                 <label for="netwokrs" id="styling" >Choose a Network:</label>
                 <select  name="network" id="network">
-                <option value="rpc">rpc</option>
-                <option value="devnet">devnet</option>
+                <option value="rpc">XDC-apothem</option>
+                <option value="devnet">XDC-devnet</option>
                 </select>
               </div><br>
-              <input type="text" id="XDCNumber" name="XDCNumber" placeholder="Enter the amount of XDC" />
+              <input type="number" id="XDCNumber" name="XDCNumber" min="1000" max="99999" placeholder="Enter the amount of XDC" />
               <input type="text" id="twitter" name="twitter" placeholder="Enter your twitter post address to request more XDC" />
             <h2>
-              Please use https://rpc.apothem.network RPC to connect<br>
-              to the XDC Apothem testnet.
+              <!-- Please use https://rpc.apothem.network RPC to connect<br>
+              to the XDC Apothem testnet. -->
             </h2>
-            <div class="g-recaptcha" data-sitekey="6LcHFrMfAAAAAOh-_8Ug2K6xjp3tNh0D07brfjE0"></div>
+            <!-- <div class="g-recaptcha" data-sitekey="6LcHFrMfAAAAAOh-_8Ug2K6xjp3tNh0D07brfjE0"></div> -->
 <br><br>
-            <button type="submit" id="requestTokens" class="request-tokens-button">Request 1000 XDC</button>
-            <!-- <button type="submit" id="requestTokens" class="request-tokens-button">Request 10Million XDC</button> -->
+            <button type="submit" id="requestTokens" class="request-tokens-button">Request XDC</button>
+            
         </div>
         <div class="text-xs-center">
         </div>
@@ -92,7 +92,13 @@
     <script src="./assets/javascripts/application.js?v=1.4" type="text/javascript"></script>
     <script type="text/javascript">
       var url = new URL(window.location.href);
-      document.getElementById('receiver').value = url.searchParams.get("address");
+       document.getElementById('receiver').value = url.searchParams.get("address");
+      // var url1 = new URL(window.location.href);
+      //  document.getElementById('network').value = url.searchParams.get("network");
+      // var url2 = new URL(window.location.href);
+      //  document.getElementById('XDCNumber').value = url.searchParams.get("userAmount");
+      //  document.getElementById('network').value = url.searchParams.get("network");
+      //  document.getElementById('XDCNumber').value = url.searchParams.get("userAmount");
     </script>
   </body>
 </html>
