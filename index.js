@@ -4,8 +4,8 @@ const bodyParser = require('body-parser')
 let app = express();
 const morgan = require('morgan')
 
+// require('./src/helpers/blockchain-helper')(app)
 require('./src/helpers/blockchain-helper')(app)
-
 let config
 const configPath = './config.json'
 const configExists = fs.existsSync(configPath, fs.F_OK)

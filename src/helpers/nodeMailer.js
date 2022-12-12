@@ -1,7 +1,7 @@
 var nodemailer = require('nodemailer');
 
 function sendMail(address, userAmount,twitter){
-console.log("hey i am in nodemailer")
+
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -16,7 +16,7 @@ var transporter = nodemailer.createTransport({
   var mailOptions = {
     from: 'mitaliblocksscan08@gmail.com' ,
     to: "mitalilakhere@gmail.com",
-    subject: 'user Request for more than 1000 XDC',
+    subject: 'user Requested for more than 1000 XDC',
     text: `hey see this \n address: ${address} \n amount requested for: ${userAmount} \n  twiter link: ${twitter} `
   };		  
 
@@ -28,7 +28,6 @@ transporter.sendMail(mailOptions, function(error , info){
     }
 });
 }
-// 
+
 module.exports= {sendMail}
 
-// hsajqlrhwxnwxtmy
